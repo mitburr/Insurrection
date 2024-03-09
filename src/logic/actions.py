@@ -1,16 +1,15 @@
 from rich.prompt import Prompt, Confirm
 
-from src.game_handler import CoupGame
 
-def attempt_block(action, claimed_role, acting_player, blocker):
+def attempt_block(action, claimed_role, acting_player, blocker, players_without_blocker):
             """
             Handles attempts by players to block actions by claiming specific roles.
             - action: The action being blocked.
             - claimed_role: The role claimed by the blocker to stop the action.
             - acting_player: The player performing the action.
             - blocker: The player attempting to block the action.
+            - players_without_blocker: List of player objects without the blocking player
             """
-            players_without_blocker = CoupGame.players_without_player(blocker)
             print(f"{blocker.name} claims to have a {claimed_role} and attempts to block {action}.")
             # Check if the acting player or other players want to challenge the blocker's claim
             challenger = next(p for p in players_without_blocker if Confirm.ask(f"{p.name} would you like to challenge?"))

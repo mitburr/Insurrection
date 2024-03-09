@@ -116,7 +116,7 @@ class CoupGame:
                 print(f"{player.name} takes 1 coin. Total coins: {player.coins}")
             elif action == "foreign aid":
                 blocking_player = next(p for p in players_without_current_player if Confirm.ask(f"{p.name} would you like to block?", choices=["y","n"]))
-                if attempt_block( action, "Duke", player, blocking_player):
+                if attempt_block( action, "Duke", player, blocking_player, self.players_without_player(blocking_player)):
                     print(f"{player.name}'s tax action was blocked by {blocking_player.name} and failed!")                 
                 else:
                     player.coins += 2
@@ -150,7 +150,7 @@ class CoupGame:
                         target_name = Prompt.ask("Who would you like to assassinate?", choices= [p.name for p in players_without_current_player])  
                         target_player = next((p for p in self.players if p.name == target_name and p.alive), None)
                         print(f"{player.name} is attempting to assassinate {target_player.name}.")
-                        if self.attempt_block(player, target_player, "Contessa"):
+                        if attempt_block(action, "Contessa", player, target_player, self.players_without_player(target_player)):
                             print(f"{target_player.name}'s assassination was blocked! They still lose 3 coins")
                         else:
                             print(f"{player.name} spends 3 coins to assassinate {target_player.name}.")
