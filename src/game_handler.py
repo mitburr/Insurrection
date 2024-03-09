@@ -1,6 +1,7 @@
 import random
-from rich.prompt import Confirm
+from rich.prompt import Prompt, Confirm
 
+from src.logic.actions import attempt_block, challenge_action
 
 class Card:
     """Represents a role card in the game."""
@@ -12,7 +13,7 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.cards = []  # Holds the player's cards (influence)
-        self.coins = 6   # Starting coins
+        self.coins = 3   # Starting coins
         self.alive = True
         self.is_bot = True
 
@@ -40,6 +41,10 @@ class CoupGame:
         random.shuffle(self.deck)
         for player in self.players:
             player.cards.append(self.deck.pop())
+            player.cards.append(self.deck.pop())
+            player.cards.append(self.deck.pop())
+            player.cards.append(self.deck.pop())
+            player.cards.append(self.deck.pop())
     
     def remove_defeated_player(self):
         for i, player in enumerate(self.players):
@@ -61,8 +66,6 @@ class CoupGame:
         """Proceed to the next player's turn and the chosen execute basic action"""
         current_player = self.players[self.current_player_index]
         players_without_current_player = self.players_without_player(current_player)
-        self.challenge_claim(current_player.name,"Duke")
-#        print(f"\nalive? {current_player.alive} player? {current_player.name} index? {self.current_player_index}")
         if not current_player.alive:
             self.current_player_index = (self.current_player_index + 1) % len(self.players)
             return True  # Skip players who have been eliminated
@@ -71,8 +74,7 @@ class CoupGame:
             self.handle_action(current_player, "coup")
         else:
             print(f"\nIt's {current_player.name}'s turn.")
-            chosen_action = input(f"{current_player.name} what would you like to do on your turn?\n")
-            self.handle_action(current_player, chosen_action)
+            self.handle_action(current_player)
 
         """Handle player loss"""
         while player := self.remove_defeated_player():
@@ -94,31 +96,45 @@ class CoupGame:
         return True
 
 
-    def handle_action(self, player, action):
+    def handle_action(self, player, action=""):
+            players_without_current_player = self.players_without_player(player)
+            if action == "coup":
+                coup_target_name = Prompt.ask(f"Which player would you like to launch a coup against?", choices= [p.name for p in players_without_current_player])
+                coup_target = next(p for p in players_without_current_player if p.name == coup_target_name)
+                player.coins -= 7
+                print(f"{player.name} has launched a coup against {coup_target.name}. 7 coins have been spent.")
+                coup_target.lose_influence()
+                return
+
+
             """Allow a player to take an action."""
-            actions = ["income", "foreign aid", "coup", "tax", "assassinate", "steal", "exchange"]
+            actions = ["income", "foreign aid", "coup", "tax", "assassinate"]
+            action = Prompt.ask(f"{player.name} what would you like to do on your turn?\n",choices=actions)
             print(f"\n{player.name} has chosen {action} for their turn.")
             if action == "income":
                 player.coins += 1
                 print(f"{player.name} takes 1 coin. Total coins: {player.coins}")
             elif action == "foreign aid":
-                for p in self.players:
-                    if p == player:
-                        continue
-                    if self.attempt_block(player, p, "Duke"):
-                        break         
-                player.coins += 2
-                print(f"{player.name} takes 2 coins (foreign aid). Total coins: {player.coins}")
+                blocking_player = next(p for p in players_without_current_player if Confirm.ask(f"{p.name} would you like to block?", choices=["y","n"]))
+                if attempt_block( action, "Duke", player, blocking_player):
+                    print(f"{player.name}'s tax action was blocked by {blocking_player.name} and failed!")                 
+                else:
+                    player.coins += 2
+                    print(f"{player.name} takes 2 coins (foreign aid). Total coins: {player.coins}")
             elif action == "coup":
                 if player.coins < 7:
-                    print("Insufficient coins to coup. A coup costs 7 coins.")
+                    print("Insufficient coins to launch a coup. A coup costs 7 coins.")
+                    self.handle_action(player)
                 else:
+                    coup_target_name = Prompt.ask(f"Which player would you like to launch a coup against?", choices= [p.name for p in players_without_current_player])
+                    coup_target = next(p for p in players_without_current_player if p.name == coup_target_name)
                     player.coins -= 7
-                    print(f"{player.name} has launched a coup. 7 coins have been spent.")
+                    print(f"{player.name} has launched a coup against {coup_target.name}. 7 coins have been spent.")
+                    coup_target.lose_influence()
             elif action == "tax":
-                if self.challenge_claim(player, "Duke"):
-                    print(f"{player.name}'s tax action was challenged and failed!")
-                    player.lose_influence()  # Assuming a failed challenge results in losing an influence
+                challenging_player = next(p for p in players_without_current_player if Confirm.ask(f"{p.name} would you like to challenge?", choices=["y","n"]))
+                if challenging_player:
+                    challenge_action(player, "Duke", challenging_player) 
                 else:
                     player.coins += 3
                     print(f"{player.name} collects 3 coins as tax.")
@@ -126,54 +142,21 @@ class CoupGame:
                 if player.coins < 3:
                     print(f"{player.name} does not have enough coins to assassinate.")
                 else:
-                    target_name = input("Who would you like to assassinate? ")  # This would be a player input in a real game
-                    target_player = next((p for p in self.players if p.name == target_name and p.alive), None)
-                    if not target_player:
-                        print("Invalid target.")
-                    print(f"{player.name} is attempting to assassinate {target_player.name}.")
-                    if self.attempt_block(player, target_player, "Contessa"):
-                        print(f"{target_player.name}'s assassination was blocked!")
+                    challenging_player = next(p for p in players_without_current_player if Confirm.ask(f"{p.name} would you like to challenge?", choices=["y","n"]))
+                    if challenging_player:
+                        challenge_action(player, "Duke", challenging_player)
                     else:
                         player.coins -= 3
-                        print(f"{player.name} spends 3 coins to assassinate {target_player.name}.")
-                        target_player.lose_influence()
+                        target_name = Prompt.ask("Who would you like to assassinate?", choices= [p.name for p in players_without_current_player])  
+                        target_player = next((p for p in self.players if p.name == target_name and p.alive), None)
+                        print(f"{player.name} is attempting to assassinate {target_player.name}.")
+                        if self.attempt_block(player, target_player, "Contessa"):
+                            print(f"{target_player.name}'s assassination was blocked! They still lose 3 coins")
+                        else:
+                            print(f"{player.name} spends 3 coins to assassinate {target_player.name}.")
+                            target_player.lose_influence()
 
             # Additional logic for other actions would go here.
-
-    def attempt_block(self, acting_player, blocker, role_name):
-        # Prompt all other players if they want to block this action, claiming they have the blocking_role
-        # For demonstration, simulate another player's decision to block
-        blocking = input(f"\n{blocker.name} would you like to block? ")
-        if blocking == "yes":
-            print(f"{blocker.name} claims to have a {role_name} and attempts to block.")
-
-            # Acting player can challenge the blocker's claim
-            if self.challenge_claim(blocker.name, role_name):
-                # Handle challenge outcome
-                return False  # If the challenge is successful, the action goes through
-            else:
-                return True  # If the blocker's claim stands, the action is blocked
-        elif blocking == "no":
-            print(f"{blocker.name} has elected not to challenge")
-        else:
-            print("Please respond with yes or no.")
-            self.attempt_block(acting_player, blocker)
-        
-    def challenge_claim(self, challenged_player_name, claimed_role):
-        #
-        # Find the challenged player object
-        challenged_player = next(p for p in self.players if Confirm.ask(f"{p.name} would you like to challenge?"))
-        
-        # Check if the challenged player actually has the claimed role
-        has_role = any(card.name == claimed_role for card in challenged_player.cards)
-        if has_role:
-            print(f"{challenged_player_name} reveals a {claimed_role} card. The challenge fails.")
-            # In a real game, the challenged player would reshuffle the revealed card into the deck and draw a new one
-            return False
-        else:
-            print(f"{challenged_player_name} could not reveal a {claimed_role} card. The challenge succeeds.")
-            challenged_player.lose_influence()
-            return True
 
 
     def show_game_state(self):
