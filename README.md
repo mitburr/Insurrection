@@ -33,11 +33,11 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 ## Extensions and Known Issues
 
-# _Known bugs:_
+__Known bugs:__
 
 - AI will occasionally choose options which aren't possible or reasonable (trying to assassinate with < 3 coins, not blocking an assassination when they have a contessa)
 
-_Next Steps:_
+__Next Steps:__
 
 - I'd break actions into their own object in the actions models with properties like "challengeable" and "blockable" so that the handler can be less verbose and more readable. Also actions like "assassinate" can only be blocked by the target, and currently that difference means that scanning players for counteractions has to be repeated at each action case in the handler because they differ. It would be more elegant to create looping methods that can react to action_type and to remove the looping logic from the handler.
 
