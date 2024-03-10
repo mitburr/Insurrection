@@ -1,4 +1,5 @@
-# Insurrection: Off-Brand "The Resistance: Coup" [^1]
+# Insurrection: Off-Brand "The Resistance: Coup" 
+[^1]
 
 ## Usage
 
