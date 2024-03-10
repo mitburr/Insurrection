@@ -1,4 +1,7 @@
-from rich.prompt import Prompt, Confirm
+from rich import print
+
+from src.models.display import decision
+
 
 
 def attempt_block(action, claimed_role, acting_player, blocker, players_without_blocker):
@@ -12,7 +15,7 @@ def attempt_block(action, claimed_role, acting_player, blocker, players_without_
             """
             print(f"{blocker.name} claims to have a {claimed_role} and attempts to block {action}.")
             # Check if the acting player or other players want to challenge the blocker's claim
-            challenger = next((p for p in players_without_blocker if Confirm.ask(f"{p.name} would you like to challenge?")), False)
+            challenger = next((p for p in players_without_blocker if decision(f"{p.name} would you like to challenge?", ["y","n"], p)), False)
             if challenger:
                 # Process the challenge
                 if challenge_action( blocker, claimed_role, acting_player):
@@ -37,6 +40,6 @@ def challenge_action( challenged_player, claimed_role, challenging_player):
         challenging_player.lose_influence()
         return False  # The challenge fails because the claim was true.
     else:
-        print(f"The challenge against {challenged_player.name}'s claim was successful. {challenged_player.name} failed to reveal a(n) {claimed_role} lost an influence.")
+        print(f"The challenge against {challenged_player.name}'s claim was successful. {challenged_player.name} failed to reveal a {claimed_role} and lost an influence.")
         challenged_player.lose_influence()
         return True  # The challenge succeeds because the claim was false.

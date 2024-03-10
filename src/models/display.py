@@ -8,7 +8,7 @@ def decision(text, choices, player):
         time.sleep(1)
         return random.choice(choices)
     else:
-        if len(choices) == 2:
+        if choices == ["y","n"]:
             return Confirm.ask(f"{text}", choices=choices)
         else:
             return Prompt.ask(text, choices=choices)
