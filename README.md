@@ -27,11 +27,11 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 - You will play against 3 opponents, and your name will be VerySmartAndCool VolterEmployee. Sick name btw, wish it were mine.
 - Only the Contessa, Assassin, and Duke cards have been implemented.
-- AI makes random decisions. Considering that you basically can't bluff because one of the other three AI will challenge 7/8 of the time, and AI will bluff extremely recklessly.
+- AI makes random decisions. Considering that: you basically can't bluff because one of the three AI will challenge 7/8 of the time. Also AI will bluff extremely recklessly.
 - Cards won't be redrawn after any player reveals to counter a challenge.
 - The treasury has no coin limit.
 
-##Extensions and Known Issues
+## Extensions and Known Issues
 
 # _Known bugs:_
 
