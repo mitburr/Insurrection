@@ -27,7 +27,7 @@ class Player:
 class CoupGame:
     """Represents the Coup game."""
     def __init__(self, player_names):
-        self.deck = [Card('Duke'), Card('Assassin'), Card('Captain'), Card('Ambassador'), Card('Contessa')] * 3
+        self.deck = [Card('Duke'), Card('Assassin'), Card('Captain'), Card('Ambassador'), Card('Contessa')] * 100
         self.players = []
         for name in player_names:
             if name == "VerySmartAndCool VolterEmployee":

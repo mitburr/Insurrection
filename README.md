@@ -1,4 +1,5 @@
 # Insurrection: Off-Brand "The Resistance: Coup" [^1]
+
 [^1]: Shout out to ChatGPT for much of the boilerplate around basic classes and methods.
 
 ## Usage
@@ -6,20 +7,18 @@
 Be sure you have Python 3.11 installed, and probably do a full system update since I'll bet you haven't in at least a month[^2].
 [^2]: `sudo pacman -Syu` if you're on a linux flavor. Mac and Windows y'all are on your own.
 
-
 1. clone the repo
    ```bash
    git clone git@github.com:mitburr/Insurrection.git
    cd Insurrection
    ```
 2. Install dependencies with poetry
-   
+
    `poetry install`
-   
-4. Run the game
-   
+
+3. Run the game
+
    `python insurrection.py`
-   
 
 ## Gameplay
 
@@ -33,11 +32,13 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 ## Extensions and Known Issues
 
-__Known bugs:__
+**Known bugs:**
 
 - AI will occasionally choose options which aren't possible or reasonable (trying to assassinate with < 3 coins, not blocking an assassination when they have a contessa)
 
-__Next Steps:__
+- With only AI playing it seems like it's possible for a nowin scenario where both of the final players lose their last card at the same time. Not sure how that's possible, but I ran into a loop after running speedruns with only AIs.
+
+**Next Steps:**
 
 - I'd break actions into their own object in the actions models with properties like "challengeable" and "blockable" so that the handler can be less verbose and more readable. Also actions like "assassinate" can only be blocked by the target, and currently that difference means that scanning players for counteractions has to be repeated at each action case in the handler because they differ. It would be more elegant to create looping methods that can react to action_type and to remove the looping logic from the handler.
 
