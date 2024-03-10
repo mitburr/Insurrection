@@ -14,7 +14,7 @@ def main():
     while game_running:
 
         ur_winning = True            
-        player_names = ["Alice", "Bob", "Charlie"]
+        player_names = ["genius", "Alice", "Bob", "Charlie" ]
         game = CoupGame(player_names)
         
         while ur_winning:

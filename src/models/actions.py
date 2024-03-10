@@ -12,12 +12,10 @@ def attempt_block(action, claimed_role, acting_player, blocker, players_without_
             """
             print(f"{blocker.name} claims to have a {claimed_role} and attempts to block {action}.")
             # Check if the acting player or other players want to challenge the blocker's claim
-            challenger = next(p for p in players_without_blocker if Confirm.ask(f"{p.name} would you like to challenge?"))
+            challenger = next((p for p in players_without_blocker if Confirm.ask(f"{p.name} would you like to challenge?")), False)
             if challenger:
                 # Process the challenge
                 if challenge_action( blocker, claimed_role, acting_player):
-                    print(f"The challenge against {blocker.name}'s claim was successful. {blocker.name} failed to reveal a(n) {claimed_role} loses an influence.")
-                    blocker.lose_influence()
                     return False  # The block is unsuccessful, and the action proceeds.
                 else:
                     print(f"The challenge against {blocker.name}'s claim failed. The action is blocked.")
@@ -33,12 +31,12 @@ def challenge_action( challenged_player, claimed_role, challenging_player):
     """
     print(f"{challenged_player.name}'s claim to have a {claimed_role} is being challenged.")
     # Check if the challenged player has the claimed role
-    has_role = any(card.name == claimed_role for card in challenged_player.cards)
+    has_role = any(card.card_type == claimed_role for card in challenged_player.cards)
     if has_role:
         print(f"{challenged_player.name} reveals a {claimed_role} card, proving their claim.")
         challenging_player.lose_influence()
         return False  # The challenge fails because the claim was true.
     else:
-        print(f"{challenged_player.name} could not prove their claim and loses an influence.")
+        print(f"The challenge against {challenged_player.name}'s claim was successful. {challenged_player.name} failed to reveal a(n) {claimed_role} lost an influence.")
         challenged_player.lose_influence()
         return True  # The challenge succeeds because the claim was false.
