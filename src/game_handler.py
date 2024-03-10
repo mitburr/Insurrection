@@ -1,5 +1,4 @@
 import random
-from rich.prompt import Prompt, Confirm
 from rich import print
 
 from src.models.actions import attempt_block, challenge_action
