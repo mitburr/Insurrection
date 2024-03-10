@@ -1,9 +1,12 @@
 # Insurrection: Off-Brand "The Resistance: Coup" 
 [^1]
+[^1] Shout out to ChatGPT for much of the boilerplate around basic classes and methods.
 
 ## Usage
 
-Be sure you have Python 3.11 installed, and probably do a full system update since I'll bet you haven't in at least a month[^2]
+Be sure you have Python 3.11 installed, and probably do a full system update since I'll bet you haven't in at least a month[^2].
+[^2] `sudo pacman -Syu` if you're on a linux flavor. Mac and Windows y'all are on your own.
+
 
 1. clone the repo
    ```bash
@@ -51,6 +54,3 @@ _Next Steps:_
 6. AI "decison making" implemented in the display model. This could be separate out eventually once the logic becomes more complicated.
 7. Choices offered are identical inputs to the "decision" method.
 8. The Contessa, Assassin, and Duke classes are the only cards implemented. This could be improved by abstracting cards the character action methods to be owned by the cards.
-
-[^1] Shout out to ChatGPT for much of the boilerplate around basic classes and methods.
-[^2] `sudo pacman -Syu` if you're on a linux flavor. Mac and Windows y'all are on your own.
