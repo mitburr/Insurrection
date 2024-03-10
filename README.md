@@ -13,9 +13,13 @@ Be sure you have Python 3.11 installed, and probably do a full system update sin
    cd Insurrection
    ```
 2. Install dependencies with poetry
+   
    `poetry install`
-3. Run the game
+   
+4. Run the game
+   
    `python insurrection.py`
+   
 
 ## Gameplay
 
