@@ -1,5 +1,4 @@
-# Insurrection: Off-Brand "The Resistance: Coup" 
-[^1]
+# Insurrection: Off-Brand "The Resistance: Coup" [^1]
 [^1]: Shout out to ChatGPT for much of the boilerplate around basic classes and methods.
 
 ## Usage
