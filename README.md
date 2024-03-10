@@ -1,11 +1,11 @@
 # Insurrection: Off-Brand "The Resistance: Coup" 
 [^1]
-[^1] Shout out to ChatGPT for much of the boilerplate around basic classes and methods.
+[^1]: Shout out to ChatGPT for much of the boilerplate around basic classes and methods.
 
 ## Usage
 
 Be sure you have Python 3.11 installed, and probably do a full system update since I'll bet you haven't in at least a month[^2].
-[^2] `sudo pacman -Syu` if you're on a linux flavor. Mac and Windows y'all are on your own.
+[^2]: `sudo pacman -Syu` if you're on a linux flavor. Mac and Windows y'all are on your own.
 
 
 1. clone the repo
