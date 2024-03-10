@@ -133,7 +133,7 @@ class CoupGame:
                     coup_target.lose_influence()
             elif action == "tax":
                 challenging_player = next((p for p in players_without_current_player if decision(f"{p.name} would you like to challenge?", ["y","n"], p)), False)
-                if challenging_player.alive & challenge_action(player, {Card('Duke').card_style}, challenging_player):
+                if challenging_player.alive & challenge_action(player, Card('Duke').card_style, challenging_player):
                     return
                 else:
                     player.coins += 3

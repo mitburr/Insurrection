@@ -14,7 +14,7 @@ def main():
     while game_running:
 
         ur_winning = True            
-        player_names = ["VerySmartAndCool VolterEmployee", "Alice", "Bob", "Charlie" ]
+        player_names = ["VerySmartAndCool VolterEmployee", "Oliver", "Aaron", "Charlie" ]
         game = CoupGame(player_names)
         
         while ur_winning:
@@ -31,18 +31,3 @@ if __name__ == "__main__":
         print("\ngg scrub")
 
 
-"""
-1. I took the game phases as action, challenge, and block. They're represented as methods.
-2. Restart instantiated here.
-3.
-4.
-5.
-6.
-7.
-8.
-
-Shortcuts:
-Only functional classes are Duke, Contessa, and Assassin
-when players rebuke a challenge successfully they do not redraw a card
-
-"""
