@@ -42,6 +42,8 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 - Validating when a player has challenged is pretty jank.
 
+- Noted that a pycache folder was included before I added the gitignore. Noting here to avoid any "functionality" changes before the deadline.
+
 **Next Steps:**
 
 - I'd break actions into their own object in the actions models with properties like "challengeable" and "blockable" so that the handler can be less verbose and more readable. Also actions like "assassinate" can only be blocked by the target, and currently that difference means that scanning players for counteractions has to be repeated at each action case in the handler because they differ. It would be more elegant to create looping methods that can react to action_type and to remove the looping logic from the handler.
