@@ -1,3 +1,5 @@
+import os
+
 from rich.console import Console
 from rich.prompt import Confirm
 
@@ -5,10 +7,13 @@ from src.game_handler import CoupGame
 
 console = Console()
 console.clear()
+  
 
 
 
 def main():
+
+    
 
     game_running = Confirm.ask("Wanna play a janky Coup knockoff?")
     while game_running:

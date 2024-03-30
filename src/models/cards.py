@@ -1,11 +1,4 @@
-"""from enum import Enum
-
-class CardType(str, Enum):
-    contessa = "Contessa" #red
-    duke = "Duke" #purple
-    assassin = "Assassin" #black
-    captain = "Captain" #blue
-    ambassador = "Ambassador" #green"""
+from src.models.actions import Tax, Assassinate
 
 color_map = {
     "Contessa": "deep_pink4",
@@ -16,6 +9,32 @@ color_map = {
 }
 
 class Card:
-    def __init__(self, type):
-        self.card_type= type
-        self.card_style= f"[{color_map[type]}]{type}[/]"
+    def __init__(self):
+        self.card_type= ""
+        self.actions={}
+
+class Duke(Card):
+    def __init__(self):
+        super().__init__()
+        self.card_type = "Duke"
+        self.card_style= f"[{color_map[self.card_type]}]{self.card_type}[/]"
+        self.actions = {
+            "tax": Tax
+        }
+
+
+class Assassin(Card):
+    def __init__(self):
+        super().__init__()
+        self.card_type = "Assassin"
+        self.card_style= f"[{color_map[self.card_type]}]{self.card_type}[/]"
+        self.actions = {
+            "assassinate": Assassinate
+        }
+
+
+class Contessa(Card):
+    def __init__(self):
+        super().__init__()
+        self.card_type = "Contessa"
+        self.card_style= f"[{color_map[self.card_type]}]{self.card_type}[/]"

@@ -38,6 +38,10 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 - With only AI playing it seems like it's possible for a nowin scenario where both of the final players lose their last card at the same time. Not sure how that's possible, but I ran into a loop after running speedruns with only AIs.
 
+- When a player fails a challenge other players are not offered the chance to challenge the action.
+
+- Validating when a player has challenged is pretty jank.
+
 **Next Steps:**
 
 - I'd break actions into their own object in the actions models with properties like "challengeable" and "blockable" so that the handler can be less verbose and more readable. Also actions like "assassinate" can only be blocked by the target, and currently that difference means that scanning players for counteractions has to be repeated at each action case in the handler because they differ. It would be more elegant to create looping methods that can react to action_type and to remove the looping logic from the handler.
@@ -58,3 +62,13 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 6. AI "decison making" implemented in the display model. This could be separate out eventually once the logic becomes more complicated.
 7. Choices offered are identical inputs to the "decision" method.
 8. The Contessa, Assassin, and Duke classes are the only cards implemented. This could be improved by abstracting cards the character action methods to be owned by the cards.
+
+**todo**
+
+- refactor actions
+
+  - refactor cards
+
+- rework action validation
+
+- replace player objects with new models
