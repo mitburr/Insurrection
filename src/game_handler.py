@@ -9,11 +9,11 @@ from src.models.players.bot import Bot
 
 type Player_Resources = dict[str, int | str]
 
-type Public_State = dict[ str, Player_Resources ]
-
 type Player_Chat = tuple[ Player, str ]
 
 type Chat_History = list[ Player_Chat ]
+
+type Public_State =  dict[str: Player_Resources, str: [Chat_History]] 
 
 
 class CoupGame:
@@ -31,7 +31,6 @@ class CoupGame:
             else:
                 self.players.append(Bot(name, True))
         self.current_player_index = 0
-        self.player_states = self.generate_game_state()
         self.game_chat_history = []
         self.turn_chat_history : Chat_History = []
 
@@ -108,13 +107,13 @@ class CoupGame:
     def handle_action(self, player):
 
             """Refresh player states data"""
-            self.player_states = self.generate_game_state()
+            game_state = self.generate_game_state()
 
             """Player Logic"""
  #           action = decision(f"{player.name} what would you like to do on your turn?\n", actions, player)
 
             """Bot action decision"""
-            action = player.decision(self.player_states)
+            action = player.decision(game_state)
             self.record_chat(player)
 
 
@@ -150,16 +149,19 @@ class CoupGame:
 
 
     def generate_game_state(self) -> Public_State:
-        contemporary_state = {}
+        player_states = {}
         for player in self.players:
             alive_status = "Alive" if player.alive else "Eliminated"
             player_resources = {
                 "coins": player.coins,
                 "cards": len(player.cards),
-                "player_status": alive_status
+                "player_status": alive_status,
             }
-            contemporary_state[player.name] = player_resources
-        return contemporary_state
+            player_states[player.name] = (player_resources)
+        return {
+                    "player resources": player_states,
+                    "chat history": self.game_chat_history
+        }
             
 """
 each player has their own thread

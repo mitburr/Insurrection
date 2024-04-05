@@ -44,7 +44,6 @@ class Bot(Player):
         _assistant.add_message(self.thread, game_state, choices, self)
         _assistant.create_run(self.thread)
 
-#        print(f"\n Decision: {self.thread.decision}\n Player: {self.name}\n Actions:{choices}")
         self.record_chat(self.thread.newest_chat)
         decision = next(action for action in choices if action.action_type == self.thread.decision)
 

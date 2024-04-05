@@ -27,7 +27,6 @@ def main():
             game.record_turn_chat_history()
             ur_winning = game.next_turn()
 
-        print(game.game_chat_history)
         game_running = Confirm.ask("Do you want to play again?")
 
 if __name__ == "__main__":

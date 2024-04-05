@@ -37,6 +37,7 @@ You will also be given a JSON information about your opponents including:
  - The number of coins that player has
  - The number of cards that player has
  - Whether that player has been eliminated
+ - The entire chat history of this game, which will be an array of each turn, with all of the player: chat instances on every turn
 This information will be formatted similarly to a JSON object.
  
 
@@ -44,7 +45,8 @@ You will also be given a list of possible choices called CHOICES.
 
 Your response should ALWAYS start with a sentence following EXACTLY the following the format "I choose BLANK" where BLANK is an item from CHOICES
 
-After this sentence you should respond with an announcement to the other players. Your statement should be strategic and should attempt to advance your strategy by convincing your opponents of something beneficial to you. 
+After this sentence you should respond with a message to the other players. Your statement should be strategic and should attempt to advance your strategy by convincing your opponents of something beneficial to you.
+You should also sometimes address an opposing player by name. 
 """
 
 
@@ -121,7 +123,13 @@ class Assistant():
         message = self.client.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
-        content=f"""You are playing as {player_data['name']} and have the following resources: {player_data}. CHOICES: {action_list}. Please respond with and "I choose" statement. (Examples: "I choose tax", "I choose assassinate"). Make sure that your statement does not include punctuation"""
+        content=f"""You are playing as {player_data['name']} and have the following resources: {player_data}. CHOICES: {action_list}. 
+        Please respond with and "I choose" statement. (Examples: "I choose tax", "I choose assassinate"). Make sure that your statement does not include punctuation
+        
+        This object represents the status of the game, and the history of all chats in the game: {game_state}
+
+        Make sure to consider the chat history, and interact with your opponents in an attempt to further your strategy.
+        """
         )
 
     def create_run(self, thread: Thread):

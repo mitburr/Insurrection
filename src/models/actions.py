@@ -5,7 +5,6 @@ from src.models.display import decision
 from src.models.cards import Card, Duke, Contessa, Assassin
 from src.models.players.base_model import Player
 
-type chat_history = list[ tuple[Player, str] ]
 
 
 class Action:
@@ -14,7 +13,6 @@ class Action:
         self.action_card = None
         self.challenge = False # Boolean for whether the action can be challenged
         self.active_player = player # A Player Object, owner of the action
-        self.chat: chat_history = []
 
     def block_phase(self, players_without_player: FunctionType, target_player: Player = None ) -> tuple[bool,Player]:
         """
@@ -68,14 +66,7 @@ class Action:
             challenged_player.lose_influence()
             return True, challenging_player  # The challenge succeeds because the claim was false.
 
-    def record_chat(self, text: str, player: Player) -> None:
-        """
-        Records one instance of a bot's text into that action's history
-         - player: the player writing the chat
-         - text: the chat to be recorded.
-        """
-        new_chat = (player, text)
-        self.chat_history.append(new_chat)
+
 
 class Income(Action):
     def __init__(self, player):
