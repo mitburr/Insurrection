@@ -123,7 +123,7 @@ class Assistant():
         thread_id=thread.id,
         role="user",
         content=f"""You are playing as {player_data['name']} and have the following resources: {player_data}. CHOICES: {choices}. 
-        Please respond to the question "{question}" with an "I choose" statement. (Examples: "I choose tax", "I choose assassinate"). Make sure that your statement does not include punctuation
+        Please respond to the question "{question}" with an "I choose" statement. (Examples: "I choose tax", "I choose assassinate"). Make sure that your statement does not include punctuation and DON'T capitalize your choice
         
         This object represents the status of the game, and the history of all chats in the game: {game_state}
 
@@ -147,9 +147,12 @@ class Assistant():
 
     def _parse_choice(self, text: Text) -> bool | str:
         self.bot_thread.newest_chat = text
-        marker_index = text.find("I choose")
-        if marker_index != -1:
-            self.bot_thread.decision = text.split()[marker_index+2]
+        text_array = text.split()
+        marker_index = text_array.index("choose")
+        if text_array[marker_index+1] == "foreign":
+            self.bot_thread.decision = "foreign aid"
+        elif marker_index != -1:
+            self.bot_thread.decision = text_array[marker_index+1]
 
 class EventHandler(AssistantEventHandler):
     # event_handler class to pass to the stream function
@@ -158,7 +161,7 @@ class EventHandler(AssistantEventHandler):
         print(f"\nassistant > ", end="", flush=True)
         
     def on_text_delta(self, delta, snapshot):
-        print(delta.value, end="", flush=False)
+        print(delta.value, end="", flush=True)
 
 #    def on_text_done(self, text):
 #        _parse_choice(text)

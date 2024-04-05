@@ -122,7 +122,7 @@ class CoupGame:
             match action.action_type:
                 case "income":
                     Income(player, game_state).income_action()
-                case "foreign":
+                case "foreign aid":
                     Foreign_Aid(player, game_state).foreign_aid_action(self.players_without_player)
                 case "coup":
                     Coup(player, game_state).coup_action(self.players_without_player)

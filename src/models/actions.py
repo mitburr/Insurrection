@@ -50,7 +50,7 @@ class Action:
         - players_without_player: Function which builds an array of players excluding the param player. 
         """
         # Determine if a player would like to challenge.
-        challenging_player = next((p for p in players_without_player(challenged_player) if p.decision(f"{p.name} would you like to challenge {challenged_player.name}'s claim to influence a {self.action_card.card_style}?",self.game_state, {"choice_type": "yes/no", "choices":  ["yes","no"]})), False)
+        challenging_player = next((p for p in players_without_player(challenged_player) if p.decision(f"{p.name} would you like to challenge {challenged_player.name}'s claim to influence a {claimed_role.card_style}?",self.game_state, {"choice_type": "yes/no", "choices":  ["yes","no"]})), False)
         if not challenging_player:
             return False, challenging_player
 
@@ -84,7 +84,7 @@ class Income(Action):
 class Foreign_Aid(Action):
     def __init__(self, player, game_state):
         super().__init__(player, game_state)
-        self.action_type = "foreign_aid"
+        self.action_type = "foreign aid"
         self.blocking_card = Duke()
     
     def foreign_aid_action(self, players_without_player):
@@ -165,7 +165,7 @@ class Assassinate(Action):
             # Block phase for the assassination target
             block, blocking_player = self.block_phase(players_without_player, target_player)
             if block:
-                print(f"{target_player.name}'s assassination blocked their own assassination! {self.active_player.name} still lose 3 [grey30]coins[/]")
+                print(f"{blocking_player.name}'s assassination blocked their own assassination! {self.active_player.name} still lose 3 [grey30]coins[/]")
             else:
                 print(f"{self.active_player.name} spends 3 [grey30]coins[/] to assassinate {target_player.name}.")
                 target_player.lose_influence()

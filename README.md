@@ -4,7 +4,7 @@
 
 ## Usage
 
-Be sure you have Python 3.11 installed, and probably do a full system update since I'll bet you haven't in at least a month[^2].
+Be sure you have _Python 3.12_ installed, and probably do a full system update since I'll bet you haven't in at least a month[^2].
 [^2]: `sudo pacman -Syu` if you're on a linux flavor. Mac and Windows y'all are on your own.
 
 1. clone the repo
@@ -20,59 +20,45 @@ Be sure you have Python 3.11 installed, and probably do a full system update sin
 
    `python insurrection.py`
 
+4. I had fewer issues running with `poetry run python insurrection_game.py`, but your mileage may vary. Reach out if you have any issues getting the game going.
+
 ## Gameplay
 
 The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-rules.php). This is a simplified version of the original Coup.
 
-- You will play against 3 opponents, and your name will be VerySmartAndCool VolterEmployee. Sick name btw, wish it were mine.
 - Only the Contessa, Assassin, and Duke cards have been implemented.
-- AI makes random decisions. Considering that: you basically can't bluff because one of the three AI will challenge 7/8 of the time. Also AI will bluff extremely recklessly.
-- Cards won't be redrawn after any player reveals to counter a challenge.
+- Cards won't be redrawn after any player reveals to counter a challenge and the deck is extremely large.
 - The treasury has no coin limit.
+- Players don't choose which cards to discard.
+
+Some examples of what the AI is capable of:
+
+![endgame.png](./assets/Endgame_with_memory.png)
+
+You can see that the AI plays with cognizance of resources and the chat history. Also, you can see that one bot accuses another of having two Dukes, which is memory of a hilarious bluff that he is even more entitled to the Duke actions because he has two of them.
+
+![suspicion.png](./assets/developing_suspicion.png)
+
+In this one the AI develops a suspicion based on previous actions from other players. Also FWIW I think they develop "personalities" as the game goes on based on the actions available to them from cards they have. Contessas are suspicous, Assassins are aggressive, and Duke's are belligerent and resource hungry.
 
 ## Extensions and Known Issues
 
 **Known bugs:**
 
-- AI will occasionally choose options which aren't possible or reasonable (trying to assassinate with < 3 coins, not blocking an assassination when they have a contessa)
+With AI it's pretty difficult to determine where bugs are sometimes, given the amount of text they output. Without AI the infrastructure for the game seems really sturdy, but it's possible that my prompts aren't clear enough and occasionally the AI is uncertain of who it is or what the card's do. I didn't observe that, but I also don't care to read every message they send to make sure they aren't making obvious mistakes.
 
-- With only AI playing it seems like it's possible for a nowin scenario where both of the final players lose their last card at the same time. Not sure how that's possible, but I ran into a loop after running speedruns with only AIs.
-
-- When a player fails a challenge other players are not offered the chance to challenge the action.
-
-- Validating when a player has challenged is pretty jank.
-
-- Noted that a pycache folder was included before I added the gitignore. Noting here to avoid any "functionality" changes before the deadline.
-
-- Currently the program parses the AI response and finds an instance of a keyword phrase that we instruct the AI to respond with. If the AI fails to use the keyword or uses the keyword phrase by chance outside of the context of outputting its decision I don't handle that logic error gracefully. I'm not spending too much time here because I feel my solution is super clunky and there must be a better way, but this is the best I could come up with considering that the Assistant API from openai is in beta.
+- Currently the program parses the AI response and finds an instance of a keyword phrase that we instruct the AI to respond with. If the AI fails to use the keyword or uses the keyword phrase by chance outside of the context of outputting its decision I don't handle that logic error gracefully. I'm not spending too much time here because I feel my solution is super clunky and there must be a better way, but this is the best I could come up with considering that the Assistant API from openai is in beta. I could definitely solve this partially with regex, but not completely.
 
 - Cards are discarded at random
 
 **Next Steps:**
 
-- I'd break actions into their own object in the actions models with properties like "challengeable" and "blockable" so that the handler can be less verbose and more readable. Also actions like "assassinate" can only be blocked by the target, and currently that difference means that scanning players for counteractions has to be repeated at each action case in the handler because they differ. It would be more elegant to create looping methods that can react to action_type and to remove the looping logic from the handler.
-
-- Implementing the above would be very useful so that actions can be owned by cards. One of many benefits of building more robust cards this way is that AI logic could then be altered based on the cards they have.
-
-- The player class should be abstracted into a model, which would allow for some separated bot logic based on a general player template.
-
 - Entire display could use a revamp. The Rich library has some good tools for this in the console, but I'd probably just spin up a simple server locally to do the game logic and then connect it to a React front end.
 
+- Completely implement the other game cards.
+
+- Build personality into the AI
+
+- Build response opportunities for the AI to interact directly with each other.
+
 ### Project Requirement Considerations
-
-1. I took the game phases as action, challenge, and block. They're represented as methods.
-2. Restart instantiated here.
-3. Rough implementation of MVC paradigm by separating the display/styling logic out for coloration. Could be further improved by separating the text out of the game handler completely and creating new action models which would hold the text. I also wrote the card model to be more extensible as that would likely be the next improvement to the display.
-4. Player 1 being VerySmartAndCool VolterEmployee, indicated by is_bot property on the Player class.
-5. AI "decison making" implemented in the display model. This could be separate out eventually once the logic becomes more complicated.
-6. AI "decison making" implemented in the display model. This could be separate out eventually once the logic becomes more complicated.
-7. Choices offered are identical inputs to the "decision" method.
-8. The Contessa, Assassin, and Duke classes are the only cards implemented. This could be improved by abstracting cards the character action methods to be owned by the cards.
-
-**todo**
-
-- debug challenge/block logic issues
-
-- real player logic
-
-- reimplement foreign aid (two words in decision find from bot text)

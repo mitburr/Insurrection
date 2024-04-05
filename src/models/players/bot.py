@@ -35,7 +35,7 @@ class Bot(Player):
 
     def decision(self, question: str, game_state: Public_State,  choices: dict) -> Action | bool | str:
 
-        print(f"{self.name} is thinking...\n")
+        print(f"\n{self.name} is thinking...\n")
         time.sleep(1)
         match choices["choice_type"]:
             case "yes/no":    
@@ -51,6 +51,7 @@ class Bot(Player):
                 self.record_chat(self.thread.newest_chat)
                 decision = next(action for action in choices if action.action_type == self.thread.decision)
             case "player":
+                print(f"{question}\n")
                 _assistant.add_message(self.thread, game_state, question, choices, self)
                 _assistant.create_run(self.thread)
                 self.record_chat(self.thread.newest_chat)
