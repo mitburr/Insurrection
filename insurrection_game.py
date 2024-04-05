@@ -19,11 +19,11 @@ def main():
     while game_running:
 
         ur_winning = True            
-        player_names = ["VerySmartAndCool VolterEmployee", "Oliver", "Aaron", "Charlie" ]
+        player_names = [ "Oliver", "Aaron", "Charlie" ]
         game = CoupGame(player_names)
         
         while ur_winning:
-            game.show_game_state()
+            game.display_game_state()
             ur_winning = game.next_turn()
 
 

@@ -44,6 +44,8 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 - Noted that a pycache folder was included before I added the gitignore. Noting here to avoid any "functionality" changes before the deadline.
 
+- Currently the program parses the AI response and finds an instance of a keyword phrase that we instruct the AI to respond with. If it doesn't use the phrase, we retry, however in the case where the AI uses the keyword phrase by chance outside of the context of outputting its decision I don't handle that logic error gracefully. I'm not spending too much time here because I feel my solution is super clunky and there must be a better way, but this is the best I could come up with considering that the Assistant API from openai is in beta.
+
 **Next Steps:**
 
 - I'd break actions into their own object in the actions models with properties like "challengeable" and "blockable" so that the handler can be less verbose and more readable. Also actions like "assassinate" can only be blocked by the target, and currently that difference means that scanning players for counteractions has to be repeated at each action case in the handler because they differ. It would be more elegant to create looping methods that can react to action_type and to remove the looping logic from the handler.
@@ -67,10 +69,8 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 **todo**
 
-- refactor actions
+-simplest ai implementation: ai chooses instead of random.
 
-  - refactor cards
+-debug challenge/block logic issues
 
-- rework action validation
-
-- replace player objects with new models
+- real player logic

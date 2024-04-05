@@ -1,5 +1,3 @@
-from src.models.actions import Tax, Assassinate
-
 color_map = {
     "Contessa": "deep_pink4",
     "Duke": "purple3",
@@ -18,9 +16,7 @@ class Duke(Card):
         super().__init__()
         self.card_type = "Duke"
         self.card_style= f"[{color_map[self.card_type]}]{self.card_type}[/]"
-        self.actions = {
-            "tax": Tax
-        }
+
 
 
 class Assassin(Card):
@@ -28,9 +24,7 @@ class Assassin(Card):
         super().__init__()
         self.card_type = "Assassin"
         self.card_style= f"[{color_map[self.card_type]}]{self.card_type}[/]"
-        self.actions = {
-            "assassinate": Assassinate
-        }
+
 
 
 class Contessa(Card):

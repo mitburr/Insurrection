@@ -1,13 +1,21 @@
 import random
 from rich import print
 
-from src.models.actions import Tax, Assassinate, attempt_block, challenge_action
+from src.models.actions import Action, Income, Foreign_Aid, Coup, Tax, Assassinate
 from src.models.display import decision
 from src.models.cards import Duke, Contessa, Assassin
-from src.models.players.model import Player
+from src.models.players.base_model import Player
+from src.models.players.bot import Bot
 
+type Player_Resources = dict[str, int | str]
+
+type Public_State = dict[ str, Player_Resources ]
 
 class CoupGame:
+    
+
+    """this object is a list of players, and a list of the game resources that player controls."""
+
     """Represents the Coup game."""
     def __init__(self, player_names):
         self.deck = [Duke(), Assassin(), Contessa()] * 100
@@ -16,8 +24,9 @@ class CoupGame:
             if name == "VerySmartAndCool VolterEmployee":
                 self.players.append(Player(name, True))
             else:
-                self.players.append(Player(name, True))
+                self.players.append(Bot(name, True))
         self.current_player_index = 0
+        self.player_states = self.generate_game_state()
 
         # Initial distribution of cards to players
         self.distribute_cards()
@@ -57,9 +66,6 @@ class CoupGame:
         if not current_player.alive:
             self.current_player_index = (self.current_player_index + 1) % len(self.players)
             return True  # Skip players who have been eliminated
-        elif current_player.coins >= 10:
-            print(f"\nIt's {current_player.name}'s turn. They have more than 10 [grey30]coins[/], and therefore must launch a coup.")
-            self.handle_action(current_player, "coup")
         else:
             print(f"\nIt's {current_player.name}'s turn.")
             self.handle_action(current_player)
@@ -84,45 +90,38 @@ class CoupGame:
         return True
 
 
-    def handle_action(self, player, action=""):
-            players_without_current_player = self.players_without_player(player)
-            if action == "coup":
-                coup_target_name = decision(f"Which player would you like to launch a coup against?", [p.name for p in players_without_current_player], player)
-                coup_target = next(p for p in players_without_current_player if p.name == coup_target_name)
-                player.coins -= 7
-                print(f"{player.name} has launched a coup against {coup_target.name}. 7 [grey30]coins[/] have been spent.")
-                coup_target.lose_influence()
-                return
+    def handle_action(self, player, action=Action):
 
+            """Refresh player states data"""
+            self.player_states = self.generate_game_state()
 
-            """Allow a player to take an action."""
-            actions = ["income", "foreign aid", "coup", "tax", "assassinate"]
-            action = decision(f"{player.name} what would you like to do on your turn?\n", actions, player)
-            print(f"\n{player.name} has chosen {action} for their turn.")
-            if action == "income":
-                player.basic_actions[action].income_action()
-            elif action == "foreign aid":
-                player.basic_actions[action].foreign_aid_action(Duke(), self.players_without_player)
-            elif action == "coup":
-                if player.coins < 7:
-                    print("Insufficient [grey30]coins[/] to launch a coup. A coup costs 7 [grey30]coins[/].")
-                    self.handle_action(player)
-                else:
-                    coup_target_name = decision(f"Which player would you like to launch a coup against?", [p.name for p in players_without_current_player], player)
-                    coup_target = next(p for p in players_without_current_player if p.name == coup_target_name)
-                    player.coins -= 7
-                    print(f"{player.name} has launched a coup against {coup_target.name}. 7 [grey30]coins[/] have been spent.")
-                    coup_target.lose_influence()
-            elif action == "tax":
-                Tax(player).tax_action( Duke() , self.players_without_player)
-            elif action == "assassinate":
-                Assassinate(player).assassinate_action(Assassin(), Contessa(), self.players_without_player)
+            """Decide action"""
+
+            """Player Logic"""
+ #           action = decision(f"{player.name} what would you like to do on your turn?\n", actions, player)
+
+            """Bot action decision"""
+            action = player.decision(self.player_states)
+
+            print(f"\n{player.name} has chosen {action.action_type} for their turn.")
+            
+            match action.action_type:
+                case "income":
+                    Income(player).income_action()
+                case "foreign_aid":
+                    Foreign_Aid(player).foreign_aid_action(self.players_without_player)
+                case "coup":
+                    Coup(player).coup_action(self.players_without_player)
+                case "tax":
+                    Tax(player).tax_action( self.players_without_player)
+                case "assassinate":
+                    Assassinate(player).assassinate_action(self.players_without_player)
 
 
             # Additional logic for other actions would go here.
 
 
-    def show_game_state(self):
+    def display_game_state(self):
         """Display the current state of the game."""
         print("\nCurrent Game State:")
         for player in self.players:
@@ -133,3 +132,26 @@ class CoupGame:
                 print(f"\n{player.name} - {alive_status}, [grey30]Coins[/]: {player.coins}, Cards: {len(player.cards)}. Your cards are:\n")
                 for card in player.cards:
                     print(f"{card.card_style}\n")
+
+    def generate_game_state(self) -> Public_State:
+        contemporary_state = {}
+        for player in self.players:
+            alive_status = "Alive" if player.alive else "Eliminated"
+            player_resources = {
+                "coins": player.coins,
+                "cards": len(player.cards),
+                "player_status": alive_status
+            }
+            contemporary_state[player.name] = player_resources
+        return contemporary_state
+            
+"""
+each player has their own thread
+each thread should have to available information
+available information should include:
+    player state data (coins, cards)
+    previous actions and statements from all other players
+
+bot player creation will happen in game setup:
+    only one Assistant is needed, the assistant will create a thread for each Player instance. 
+"""
