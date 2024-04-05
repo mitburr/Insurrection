@@ -44,7 +44,9 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 - Noted that a pycache folder was included before I added the gitignore. Noting here to avoid any "functionality" changes before the deadline.
 
-- Currently the program parses the AI response and finds an instance of a keyword phrase that we instruct the AI to respond with. If it doesn't use the phrase, we retry, however in the case where the AI uses the keyword phrase by chance outside of the context of outputting its decision I don't handle that logic error gracefully. I'm not spending too much time here because I feel my solution is super clunky and there must be a better way, but this is the best I could come up with considering that the Assistant API from openai is in beta.
+- Currently the program parses the AI response and finds an instance of a keyword phrase that we instruct the AI to respond with. If the AI fails to use the keyword or uses the keyword phrase by chance outside of the context of outputting its decision I don't handle that logic error gracefully. I'm not spending too much time here because I feel my solution is super clunky and there must be a better way, but this is the best I could come up with considering that the Assistant API from openai is in beta.
+
+- Cards are discarded at random
 
 **Next Steps:**
 
