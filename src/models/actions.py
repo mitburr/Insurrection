@@ -50,10 +50,7 @@ class Action:
         - players_without_player: Function which builds an array of players excluding the param player. 
         """
         # Determine if a player would like to challenge.
-        for p in players_without_player(challenged_player): 
-            print(p.decision(f"{p.name} would you like to challenge {challenged_player.name}'s claim to influence a {self.action_card.card_type}?",self.game_state, {"choice_type": "yes/no", "choices":  ["yes","no"]}))
-        challenging_player = next((p for p in players_without_player(challenged_player) if p.decision(f"{p.name} would you like to challenge {challenged_player.name}'s claim to influence a {self.action_card}?",self.game_state, {"choice_type": "yes/no", "choices":  ["yes","no"]})), False)
-        print(f"\nchallening player object: {challenging_player}\n")
+        challenging_player = next((p for p in players_without_player(challenged_player) if p.decision(f"{p.name} would you like to challenge {challenged_player.name}'s claim to influence a {self.action_card.card_style}?",self.game_state, {"choice_type": "yes/no", "choices":  ["yes","no"]})), False)
         if not challenging_player:
             return False, challenging_player
 

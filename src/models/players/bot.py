@@ -37,14 +37,14 @@ class Bot(Player):
 
         print(f"{self.name} is thinking...\n")
  #       time.sleep(1)
-        print(f"\n choices: {choices} \n")
         match choices["choice_type"]:
             case "yes/no":    
                 print(f"{question}\n")
                 _assistant.add_message(self.thread, game_state, question, choices, self)
                 _assistant.create_run(self.thread)
                 self.record_chat(self.thread.newest_chat)
-                decision = True if self.thread.decision is "yes" else False
+                print(f"\nself.thread.decision is {self.thread.decision}\n")
+                decision = True if self.thread.decision == "yes" else False
             case "action":
                 choices = self.generate_action_choices(game_state)
                 _assistant.add_message(self.thread, game_state, question, choices, self)
@@ -57,6 +57,6 @@ class Bot(Player):
                 self.record_chat(self.thread.newest_chat)
                 decision = self.thread.newest_chat
 
-
+        print(f"\n decision output is: {decision}")
         return decision
     

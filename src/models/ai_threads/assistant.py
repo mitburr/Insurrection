@@ -148,7 +148,8 @@ class Assistant():
     def _parse_choice(self, text: Text) -> bool | str:
         self.bot_thread.newest_chat = text
         marker_index = text.find("I choose")
-        if marker_index is not -1:
+        if marker_index != -1:
+            print(f"\nsplit text input is {text.split()}")
             self.bot_thread.decision = text.split()[marker_index+2]
 
 class EventHandler(AssistantEventHandler):
