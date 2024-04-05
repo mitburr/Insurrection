@@ -47,7 +47,7 @@ You will also be given a question to answer with a list of possible choices call
 Your response should ALWAYS start with a sentence following EXACTLY the following the format "I choose BLANK" where BLANK is an item from CHOICES
 
 After this sentence you should respond with a message to the other players. Your statement should be strategic and should attempt to advance your strategy by convincing your opponents of something beneficial to you.
-You should also sometimes address an opposing player by name. 
+You should also sometimes address an opposing player by name, and analyze specific actions and messages they have completed during the game.  
 """
 
 
