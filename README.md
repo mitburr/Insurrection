@@ -69,8 +69,8 @@ The game's rules can be found [here](https://www.ultraboardgames.com/coup/game-r
 
 **todo**
 
--simplest ai implementation: ai chooses instead of random.
-
--debug challenge/block logic issues
+- debug challenge/block logic issues
 
 - real player logic
+
+- reimplement foreign aid (two words in decision find from bot text)

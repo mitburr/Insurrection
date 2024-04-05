@@ -22,7 +22,7 @@ class Bot(Player):
     
     
     def generate_action_choices(self) -> list[Action]:
-        choices = [Income(Player), Foreign_Aid(Player), Tax(Player)]
+        choices = [Income(Player), Tax(Player)]
         if self.coins >= 3:
             choices.append(Assassinate(Player))
         if self.coins >= 7:
@@ -44,7 +44,8 @@ class Bot(Player):
         _assistant.add_message(self.thread, game_state, choices, self)
         _assistant.create_run(self.thread)
 
-        print(f"\n Decision: {self.thread.decision}\n Player: {self.name}\n Actions:{choices}")
+#        print(f"\n Decision: {self.thread.decision}\n Player: {self.name}\n Actions:{choices}")
+        self.record_chat(self.thread.newest_chat)
         decision = next(action for action in choices if action.action_type == self.thread.decision)
 
         return decision

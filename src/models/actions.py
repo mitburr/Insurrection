@@ -5,7 +5,7 @@ from src.models.display import decision
 from src.models.cards import Card, Duke, Contessa, Assassin
 from src.models.players.base_model import Player
 
-actions = ["income", "foreign aid", "coup", "tax", "assassinate"]
+type chat_history = list[ tuple[Player, str] ]
 
 
 class Action:
@@ -14,8 +14,7 @@ class Action:
         self.action_card = None
         self.challenge = False # Boolean for whether the action can be challenged
         self.active_player = player # A Player Object, owner of the action
-        self.bluff = bool #Indicates whether this choice would be a bluff based on the player's current cards. 
-
+        self.chat: chat_history = []
 
     def block_phase(self, players_without_player: FunctionType, target_player: Player = None ) -> tuple[bool,Player]:
         """
@@ -55,9 +54,7 @@ class Action:
         # Determine if a player would like to challenge.
         challenging_player = next((p for p in players_without_player(challenged_player) if decision(f"{p.name} would you like to challenge {challenged_player.name}'s claimed to influence a {self.action_type}?", ["y","n"], p)), False)
         if not challenging_player:
-            print(f"\n {challenging_player} \n")
             return False, challenging_player
-        print(f"\n {challenging_player.name} \n")
 
         print(f"{challenging_player.name} is challenging {challenged_player.name}'s claim to have a {claimed_role.card_style}")
         # Check if the challenged player has the claimed role
@@ -70,6 +67,15 @@ class Action:
             print(f"The challenge against {challenged_player.name}'s claim was successful. {challenged_player.name} failed to reveal a {claimed_role.card_style} and lost an influence.")
             challenged_player.lose_influence()
             return True, challenging_player  # The challenge succeeds because the claim was false.
+
+    def record_chat(self, text: str, player: Player) -> None:
+        """
+        Records one instance of a bot's text into that action's history
+         - player: the player writing the chat
+         - text: the chat to be recorded.
+        """
+        new_chat = (player, text)
+        self.chat_history.append(new_chat)
 
 class Income(Action):
     def __init__(self, player):

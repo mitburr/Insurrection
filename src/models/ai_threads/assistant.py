@@ -13,7 +13,7 @@ type Player_Resources = dict[str, int | str]
 type Public_State = dict[ str, Player_Resources ]
 
 assistant_instructions = """
-You are an AI playing the game Coup: The Resistance. 
+You are an AI player in the game Coup: The Resistance. 
 I will give you information about the game state and the character you're playing, and you should respond from the first person as if you're playing the game. 
 
 Coup: The Resistance is won when all of your opponents have been forced to discard their cards.
@@ -21,7 +21,7 @@ Coup: The Resistance is won when all of your opponents have been forced to disca
 This version of Coup: The Reistance only has access to three cards, including the Duke card, the Assassin card, and the Contessa card.
 Additionally, the deck has an unlimited supply of all cards.
 
-
+All of your responses and choices should be written from the first person. 
 """
 
 initializing_instructions = """
@@ -42,7 +42,9 @@ This information will be formatted similarly to a JSON object.
 
 You will also be given a list of possible choices called CHOICES.
 
-Your response should exactly follow the format "I choose BLANK" where BLANK is an item from CHOICES
+Your response should ALWAYS start with a sentence following EXACTLY the following the format "I choose BLANK" where BLANK is an item from CHOICES
+
+After this sentence you should respond with an announcement to the other players. Your statement should be strategic and should attempt to advance your strategy by convincing your opponents of something beneficial to you. 
 """
 
 
@@ -63,6 +65,7 @@ class Thread:
         self.id = thread.id
 
         # stream access variables
+        self.newest_chat = ""
         self.decision = ""
 
 class Assistant():
@@ -136,6 +139,7 @@ class Assistant():
 
 
     def _parse_choice(self, text: Text) -> bool | str:
+        self.bot_thread.newest_chat = text
         marker_index = text.find("I choose")
         if marker_index is not -1:
             self.bot_thread.decision = text.split()[marker_index+2]
@@ -152,12 +156,7 @@ class EventHandler(AssistantEventHandler):
 #    def on_text_done(self, text):
 #        _parse_choice(text)
 
-    def on_text_created(self, text: Text):
-        pass
-    def on_text_delta(self, delta: TextDelta, snapshot: Text):
-        pass
-    def on_text_done(self, text: Text):
-        pass
+
 
 
 

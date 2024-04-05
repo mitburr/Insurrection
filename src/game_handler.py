@@ -11,6 +11,11 @@ type Player_Resources = dict[str, int | str]
 
 type Public_State = dict[ str, Player_Resources ]
 
+type Player_Chat = tuple[ Player, str ]
+
+type Chat_History = list[ Player_Chat ]
+
+
 class CoupGame:
     
 
@@ -27,6 +32,9 @@ class CoupGame:
                 self.players.append(Bot(name, True))
         self.current_player_index = 0
         self.player_states = self.generate_game_state()
+        self.game_chat_history = []
+        self.turn_chat_history : Chat_History = []
+
 
         # Initial distribution of cards to players
         self.distribute_cards()
@@ -60,6 +68,13 @@ class CoupGame:
             if player.alive and player.name != excluded_player.name
         ]
 
+    def record_chat(self, player: Player) -> None:
+        self.turn_chat_history.append((player, player.chat))
+
+    def record_turn_chat_history(self) -> None:
+        self.game_chat_history.append(self.turn_chat_history)
+        self.turn_chat_history = []
+
     def next_turn(self) -> bool:
         """Proceed to the next player's turn and the chosen execute basic action"""
         current_player = self.players[self.current_player_index]
@@ -90,18 +105,18 @@ class CoupGame:
         return True
 
 
-    def handle_action(self, player, action=Action):
+    def handle_action(self, player):
 
             """Refresh player states data"""
             self.player_states = self.generate_game_state()
-
-            """Decide action"""
 
             """Player Logic"""
  #           action = decision(f"{player.name} what would you like to do on your turn?\n", actions, player)
 
             """Bot action decision"""
             action = player.decision(self.player_states)
+            self.record_chat(player)
+
 
             print(f"\n{player.name} has chosen {action.action_type} for their turn.")
             
@@ -127,11 +142,12 @@ class CoupGame:
         for player in self.players:
             alive_status = "Alive" if player.alive else "Eliminated"
             if player.is_bot:
-                print(f"{player.name} - {alive_status}, [grey30]Coins[/]: {player.coins}, Cards: {len(player.cards)}")
+                print(f"{player.name} - {alive_status}, [grey30]Coins[/]: {player.coins}, Cards: ")
+                print('\n'.join(card.card_style for card in player.cards)) 
             else:
                 print(f"\n{player.name} - {alive_status}, [grey30]Coins[/]: {player.coins}, Cards: {len(player.cards)}. Your cards are:\n")
-                for card in player.cards:
-                    print(f"{card.card_style}\n")
+                print('\n'.join(card.card_style for card in player.cards)) 
+
 
     def generate_game_state(self) -> Public_State:
         contemporary_state = {}

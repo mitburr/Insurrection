@@ -1,5 +1,6 @@
 from rich import print
 
+type Player_Chat = tuple[ Player, str ]
 
 class Player:
     """Represents a player in the game."""
@@ -9,6 +10,7 @@ class Player:
         self.coins = 3   # Starting coins
         self.alive = True
         self.is_bot = bot
+        self.chat = Player_Chat
 
 
     def lose_influence(self):
@@ -16,5 +18,13 @@ class Player:
         if self.cards:
             card = self.cards.pop()
             print(f"{self.name} has lost an influence: {card.card_style}.")
+
+    def record_chat(self, text: str) -> None:
+        """
+        Records most recent instance of a bot's text
+            - text: the chat to be recorded.
+        """
+        new_chat = (self, text)
+        self.chat = new_chat
 
     
