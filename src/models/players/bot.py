@@ -21,31 +21,42 @@ class Bot(Player):
         self.thread = _assistant.create_thread(self)
     
     
-    def generate_action_choices(self) -> list[Action]:
-        choices = [Income(Player), Tax(Player)]
+    def generate_action_choices(self, game_state) -> list[Action]:
+        choices = [Income(Player, game_state), Tax(Player, game_state)]
         if self.coins >= 3:
-            choices.append(Assassinate(Player))
+            choices.append(Assassinate(Player, game_state))
         if self.coins >= 7:
-            choices.append(Coup(Player))
+            choices.append(Coup(Player, game_state))
         if self.coins >= 10:
-            choices = [Coup(Player)]
+            choices = [Coup(Player, game_state)]
             return choices
 
         return choices
 
-    def decision(self, game_state: Public_State,  choices: str=""):
+    def decision(self, question: str, game_state: Public_State,  choices: dict) -> Action | bool | str:
 
         print(f"{self.name} is thinking...\n")
  #       time.sleep(1)
-        if choices == ["y", "n"]:
-            return random.choice([True, False])
-        
-        choices = self.generate_action_choices()
-        _assistant.add_message(self.thread, game_state, choices, self)
-        _assistant.create_run(self.thread)
+        print(f"\n choices: {choices} \n")
+        match choices["choice_type"]:
+            case "yes/no":    
+                print(f"{question}\n")
+                _assistant.add_message(self.thread, game_state, question, choices, self)
+                _assistant.create_run(self.thread)
+                self.record_chat(self.thread.newest_chat)
+                decision = True if self.thread.decision is "yes" else False
+            case "action":
+                choices = self.generate_action_choices(game_state)
+                _assistant.add_message(self.thread, game_state, question, choices, self)
+                _assistant.create_run(self.thread)
+                self.record_chat(self.thread.newest_chat)
+                decision = next(action for action in choices if action.action_type == self.thread.decision)
+            case "player":
+                _assistant.add_message(self.thread, game_state, question, choices, self)
+                _assistant.create_run(self.thread)
+                self.record_chat(self.thread.newest_chat)
+                decision = self.thread.newest_chat
 
-        self.record_chat(self.thread.newest_chat)
-        decision = next(action for action in choices if action.action_type == self.thread.decision)
 
         return decision
     

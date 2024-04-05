@@ -1,8 +1,8 @@
 import random
+from rich.prompt import Prompt, Confirm
 from rich import print
 
 from src.models.actions import Action, Income, Foreign_Aid, Coup, Tax, Assassinate
-from src.models.display import decision
 from src.models.cards import Duke, Contessa, Assassin
 from src.models.players.base_model import Player
 from src.models.players.bot import Bot
@@ -90,7 +90,7 @@ class CoupGame:
                 print(f"\n{player.name} has crashed and burned.")
             else:
                 print("\ngg scrub, gl next")
-                gg = decision("\nWatch the bots duke it out?", ["y","n"], player)
+                gg = Confirm.ask("\nWatch the bots duke it out?", ["y","n"], player)
                 if not gg:
                     return False
 
@@ -113,7 +113,7 @@ class CoupGame:
  #           action = decision(f"{player.name} what would you like to do on your turn?\n", actions, player)
 
             """Bot action decision"""
-            action = player.decision(game_state)
+            action = player.decision("What would you like to do on your turn?", game_state, {"choice_type": "action", "choices": ""})
             self.record_chat(player)
 
 
@@ -121,15 +121,15 @@ class CoupGame:
             
             match action.action_type:
                 case "income":
-                    Income(player).income_action()
+                    Income(player, game_state).income_action()
                 case "foreign_aid":
-                    Foreign_Aid(player).foreign_aid_action(self.players_without_player)
+                    Foreign_Aid(player, game_state).foreign_aid_action(self.players_without_player)
                 case "coup":
-                    Coup(player).coup_action(self.players_without_player)
+                    Coup(player, game_state).coup_action(self.players_without_player)
                 case "tax":
-                    Tax(player).tax_action( self.players_without_player)
+                    Tax(player, game_state).tax_action( self.players_without_player)
                 case "assassinate":
-                    Assassinate(player).assassinate_action(self.players_without_player)
+                    Assassinate(player, game_state).assassinate_action(self.players_without_player)
 
 
             # Additional logic for other actions would go here.

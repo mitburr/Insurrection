@@ -12,6 +12,7 @@ type Player_Resources = dict[str, int | str]
 
 type Public_State = dict[ str, Player_Resources ]
 
+
 assistant_instructions = """
 You are an AI player in the game Coup: The Resistance. 
 I will give you information about the game state and the character you're playing, and you should respond from the first person as if you're playing the game. 
@@ -41,7 +42,7 @@ You will also be given a JSON information about your opponents including:
 This information will be formatted similarly to a JSON object.
  
 
-You will also be given a list of possible choices called CHOICES.
+You will also be given a question to answer with a list of possible choices called CHOICES.
 
 Your response should ALWAYS start with a sentence following EXACTLY the following the format "I choose BLANK" where BLANK is an item from CHOICES
 
@@ -104,7 +105,7 @@ class Assistant():
         return Thread(openai_thread_object)
 
 
-    def add_message(self, thread: Thread, game_state: Public_State, choices: list[Action], player: Player):
+    def add_message(self, thread: Thread, game_state: Public_State, question: str, choices: list[str], player: Player):
         """
         Adds a message to the given thread object.
         - thread: Thread object to add the message to. 
@@ -112,23 +113,21 @@ class Assistant():
         - choices: a list of Action objects to be parsed into a Message
         - player: the player object who's currently deciding on an action.
         """
-        action_list = []
         player_data = {
             "name":player.name,
             "coins":player.coins,
             "cards":player.cards
         }
-        for action in choices:
-            action_list.append(action.action_type)
+
         message = self.client.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
-        content=f"""You are playing as {player_data['name']} and have the following resources: {player_data}. CHOICES: {action_list}. 
-        Please respond with and "I choose" statement. (Examples: "I choose tax", "I choose assassinate"). Make sure that your statement does not include punctuation
+        content=f"""You are playing as {player_data['name']} and have the following resources: {player_data}. CHOICES: {choices}. 
+        Please respond to the question "{question}" with an "I choose" statement. (Examples: "I choose tax", "I choose assassinate"). Make sure that your statement does not include punctuation
         
         This object represents the status of the game, and the history of all chats in the game: {game_state}
 
-        Make sure to consider the chat history, and interact with your opponents in an attempt to further your strategy.
+        Make sure to consider the chat history when making your decision, and interact with your opponents in an attempt to further your strategy.
         """
         )
 
